@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluate – EvalAssist AI{% endblock %}
+{% block meta_desc %}Paste or upload a student's written answer, set a rubric, and get provisional AI-assisted marks with full evidence. The teacher approves the final score.{% endblock %}
+
+{% block content %}
+
+<!-- Page hero -->
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">AI-ASSISTED MARKING</span>
+      <h1>Evaluate an answer</h1>
+      <p>Paste or upload a student's written answer, define your rubric, and EvalAssist will suggest provisional marks with full evidence. You review and approve.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div class="eval-layout">
+
+      <!-- ── Left: form ── -->
+      <div>
+        <div class="notice" style="margin-bottom:20px" role="note">
+          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span><strong>Provisional only.</strong> All marks suggested by EvalAssist must be reviewed and approved by a teacher before use.</span>
+        </div>
+
+        <form id="evaluateForm" novalidate aria-label="Answer evaluation form">
+          <div class="card" style="margin-bottom:20px">
+            <h2 style="font-size:16px;font-weight:700;margin-bottom:20px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">1 · Assignment details</h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="labelInput">Student label <span style="color:var(--text-light)">(optional)</span></label>
+                <input type="text" class="form-control" id="labelInput" name="label"
+                  placeholder="e.g. Assignment 2" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="maxMarks">Maximum marks</label>
+                <input type="number" class="form-control" id="maxMarks" name="max_marks"
+                  value="10" min="1" max="100" step="0.5" required
+                  aria-describedby="maxMarksHint">
+                <div class="form-hint" id="maxMarksHint">Enter a value from 1 to 100.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="questionInput">Question / task description <span style="color:var(--text-light)">(optional)</span></label>
+              <input type="text" class="form-control" id="questionInput" name="question"
+                placeholder="e.g. Explain the BFS algorithm and analyse its complexity.">
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px">
+            <h2 style="font-size:16px;font-weight:700;margin-bottom:20px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">2 · Rubric</h2>
+
+            <div class="form-group">
+              <label class="form-label" for="rubricText">Criteria <span style="color:var(--text-light)">(one per line; blank = 4 default BFS criteria)</span></label>
+              <textarea class="form-control" id="rubricText" name="rubric" rows="5"
+                placeholder="Define the BFS algorithm and explain its core purpose&#10;Describe the data structure used by BFS and why it is appropriate&#10;Explain the time and space complexity of BFS with justification&#10;Compare BFS with depth-first search and state when BFS is preferred"
+                aria-describedby="rubricHint"></textarea>
+              <div class="form-hint" id="rubricHint">Leave blank to use the four default BFS criteria. Each line becomes one scored criterion.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="margin-bottom:8px">Similarity mode</label>
+              <div class="mode-toggle" role="group" aria-label="Similarity mode">
+                <button type="button" class="mode-btn active" data-mode="passage" id="modePassage">
+                  Best-matching sentence (default)
+                </button>
+                <button type="button" class="mode-btn" data-mode="whole" id="modeWhole">
+                  Whole answer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:20px">
+            <h2 style="font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">3 · Student answer</h2>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+              <div class="sample-buttons" role="group" aria-label="Load sample answer">
+                <span style="font-size:12px;color:var(--text-muted);align-self:center">Sample:</span>
+                <button type="button" class="btn-sample strong" data-sample="strong">Strong</button>
+                <button type="button" class="btn-sample partial" data-sample="partial">Partial</button>
+                <button type="button" class="btn-sample weak" data-sample="weak">Weak</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="answerText">Answer text</label>
+              <textarea class="exam-paper" id="answerText" name="answer" rows="10"
+                placeholder="Paste the student's answer here, or upload a file below…"
+                aria-describedby="answerHint" required></textarea>
+              <div class="form-hint" id="answerHint">Paste text directly, or upload a .txt, .pdf, or .docx file below.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="fileInput">Upload file <span style="color:var(--text-light)">(TXT · PDF · DOCX · max 8 MB)</span></label>
+              <div class="drop-zone" id="dropZone" role="button" tabindex="0"
+                aria-label="Drop file here or click to browse">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                <p>Drag & drop, or <strong>click to select</strong> a .txt, .pdf, or .docx file</p>
+              </div>
+              <input type="file" id="fileInput" name="file" accept=".txt,.pdf,.docx"
+                class="sr-only" aria-label="File upload">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submitBtn" style="width:100%;justify-content:center;padding:16px">
+            <span class="btn-text">Evaluate</span>
+            <span class="spinner" style="display:none" aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <!-- Results panel -->
+        <div id="resultsPanel" class="results-panel" aria-live="polite" aria-label="Evaluation results" style="margin-top:28px">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+
+      <!-- ── Right: sidebar ── -->
+      <aside aria-label="Session history and tips">
+        <div class="card" style="margin-bottom:20px">
+          <h2 style="font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">
+            Session history
+            <span style="float:right;font-size:10px;font-weight:600;padding:2px 8px;border-radius:50px;background:#fef3c7;color:var(--amber)">Not saved</span>
+          </h2>
+          <div class="history-wrap">
+            {% if history %}
+            <table class="history-table" aria-label="Session history">
+              <thead>
+                <tr>
+                  <th>Label</th>
+                  <th>Marks</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for h in history %}
+                <tr>
+                  <td>{{ h.label }}</td>
+                  <td class="mono">{{ h.suggested }} / {{ h.max_marks }}</td>
+                  <td class="mono">{{ h.timestamp }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="history-empty">No evaluations this session. Run one above.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 style="font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">Tips</h2>
+          <ul style="display:flex;flex-direction:column;gap:12px">
+            <li style="font-size:13px;color:var(--text-muted);padding-left:16px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">·</span>
+              Write criteria as complete sentences for better keyword coverage.
+            </li>
+            <li style="font-size:13px;color:var(--text-muted);padding-left:16px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">·</span>
+              "Best-matching sentence" mode works well for long answers.
+            </li>
+            <li style="font-size:13px;color:var(--text-muted);padding-left:16px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">·</span>
+              Always use anonymised data — no names or IDs.
+            </li>
+            <li style="font-size:13px;color:var(--text-muted);padding-left:16px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">·</span>
+              Every provisional mark must be approved by a teacher.
+            </li>
+          </ul>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <a href="{{ url_for('how_it_works') }}" style="font-size:13px;font-weight:600;color:var(--red)">Learn how scores are calculated →</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

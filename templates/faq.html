@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ – EvalAssist AI{% endblock %}
+{% block meta_desc %}Frequently asked questions about EvalAssist AI: how scores are calculated, which file types work, whether data is stored, and how teachers stay in control.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">HELP</span>
+      <h1>Frequently asked questions</h1>
+      <p>Answers to the most common questions about EvalAssist. Can't find what you need? Check the <a href="{{ url_for('docs') }}" style="color:var(--yellow);font-weight:600">Docs</a> page.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container" style="max-width:820px">
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq1-btn" aria-controls="faq1" aria-expanded="false">
+          Does EvalAssist replace teachers?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq1" role="region" aria-labelledby="faq1-btn">
+          <p><strong>No.</strong> EvalAssist is a marking <em>assistant</em>, not a marking system. It suggests provisional scores based on TF-IDF similarity and keyword coverage, but every score must be reviewed and approved by a teacher before it is used. The teacher can edit any mark freely. The AI assists; the teacher decides.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq2-btn" aria-controls="faq2" aria-expanded="false">
+          How is the score calculated?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq2" role="region" aria-labelledby="faq2-btn">
+          <p>For each criterion, EvalAssist computes two signals:</p>
+          <ul style="margin:10px 0 10px 20px;list-style:disc">
+            <li><strong>S</strong> – TF-IDF cosine similarity between the criterion and the answer (or the best-matching sentence)</li>
+            <li><strong>K</strong> – share of the criterion's content words found in the answer</li>
+          </ul>
+          <p>These are combined as: <code style="background:var(--page-bg);padding:2px 6px;border-radius:4px">R = min(1, 0.65·S + 0.35·K)</code></p>
+          <p style="margin-top:8px">Marks for that criterion = (maximum marks ÷ number of criteria) × R. The weights (0.65, 0.35) are a starting heuristic and are disclosed in full. See <a href="{{ url_for('how_it_works') }}" style="color:var(--red)">How it works</a> for the full explanation.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq3-btn" aria-controls="faq3" aria-expanded="false">
+          Which file types are supported?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq3" role="region" aria-labelledby="faq3-btn">
+          <p>EvalAssist accepts <strong>.txt</strong>, <strong>.pdf</strong>, and <strong>.docx</strong> files up to 8 MB. Files are processed locally; nothing is sent to an external server. PDF files must be text-based — scanned PDFs produce almost no extractable text, and OCR is not supported. The app will warn you if a PDF appears to be scanned.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq4-btn" aria-controls="faq4" aria-expanded="false">
+          Is my data stored?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq4" role="region" aria-labelledby="faq4-btn">
+          <p><strong>No.</strong> EvalAssist stores nothing to disk and sends nothing to external servers. The session history visible on the Evaluate page exists only in your server's RAM and is cleared when the Flask server stops. Always use anonymised data — replace student names and IDs before uploading any file.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq5-btn" aria-controls="faq5" aria-expanded="false">
+          Why does a correct answer sometimes score low?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq5" role="region" aria-labelledby="faq5-btn">
+          <p>TF-IDF operates on word frequency, not meaning. A student who correctly explains a concept using different vocabulary from the rubric may score lower than expected. Similarly, keyword coverage checks for the presence of specific words, so correct paraphrases without the exact keyword are counted as missing. This is a known limitation — see <a href="{{ url_for('responsible_ai') }}" style="color:var(--red)">Responsible AI</a> for the full list. The teacher review step exists precisely to catch these cases.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq6-btn" aria-controls="faq6" aria-expanded="false">
+          Can I change the marks?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq6" role="region" aria-labelledby="faq6-btn">
+          <p><strong>Yes — always.</strong> Every suggested mark appears in an editable input field in the results table. You can change any mark at any time before approving. This is by design: EvalAssist's scores are starting points, not final decisions. Use the "Approve marks" button only after you are satisfied with every criterion's mark.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq7-btn" aria-controls="faq7" aria-expanded="false">
+          Does it work offline?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq7" role="region" aria-labelledby="faq7-btn">
+          <p><strong>Yes.</strong> Once installed, EvalAssist runs entirely locally. It uses scikit-learn for TF-IDF (no API calls), and the web fonts (Poppins, IBM Plex Mono) are the only external resources. The scoring engine, file extraction, and all AI demos function without an internet connection. If Google Fonts are unavailable offline, the browser falls back to system fonts.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq8-btn" aria-controls="faq8" aria-expanded="false">
+          What does "best-matching sentence" mode do?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq8" role="region" aria-labelledby="faq8-btn">
+          <p>In <em>Best-matching sentence</em> mode (the default), EvalAssist splits the answer into sentences and computes TF-IDF cosine similarity between each sentence and the criterion. It uses the highest similarity score and shows the matching sentence in the evidence panel. This works well for long answers where a student addresses each criterion in a specific part of their text. <em>Whole answer</em> mode compares the entire answer at once, which can smooth out a short but highly relevant sentence.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq9-btn" aria-controls="faq9" aria-expanded="false">
+          How do I write a good rubric?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq9" role="region" aria-labelledby="faq9-btn">
+          <p>Write each criterion as a complete, specific sentence that contains the key terms a student should use. For example: <em>"Explain the time and space complexity of BFS with justification"</em> works better than <em>"complexity"</em> alone. Each line in the rubric box becomes one scored criterion. The keyword-extraction step strips stop words and applies light stemming, so related word forms are usually matched.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-question" id="faq10-btn" aria-controls="faq10" aria-expanded="false">
+          Can I use EvalAssist for high-stakes exams?
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-answer" id="faq10" role="region" aria-labelledby="faq10-btn">
+          <p><strong>Not without careful human review.</strong> EvalAssist is not validated for high-stakes assessment where marks determine progression, awards, or qualifications. The heuristic weights have not been tested against a dataset of human-marked answers. If you use it for any formal assessment, every provisional mark must be independently verified by a qualified teacher before release. See <a href="{{ url_for('responsible_ai') }}" style="color:var(--red)">Responsible AI → When NOT to use it</a>.</p>
+        </div>
+      </div>
+
+    </div><!-- /faq-list -->
+
+    <div style="margin-top:40px;text-align:center">
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px">Still have questions?</p>
+      <a href="{{ url_for('docs') }}" class="btn btn-outline" style="margin-right:12px">Docs &amp; setup →</a>
+      <a href="{{ url_for('evaluate_page') }}" class="btn btn-primary">Try the evaluator →</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}How It Works – EvalAssist AI{% endblock %}
+{% block meta_desc %}Plain-language explanation of how EvalAssist AI scores written answers: TF-IDF cosine similarity, keyword coverage, the scoring formula, and the teacher review step.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">TRANSPARENCY</span>
+      <h1>How EvalAssist works</h1>
+      <p>A plain-language walkthrough of the pipeline — from raw text to a provisional mark that a teacher can approve.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pipeline diagram -->
+<section class="section-sm">
+  <div class="container">
+    <div class="center" style="margin-bottom:36px">
+      <span class="eyebrow">Pipeline</span>
+      <h2 class="section-title" style="margin:10px 0">The evaluation pipeline</h2>
+      <p class="section-sub">Six stages, fully traceable. Every number in the result comes from one of these stages.</p>
+    </div>
+    <div class="pipeline-diagram reveal">
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>1 · Input</h4>
+        <p>Answer text + rubric criteria + maximum marks</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        </div>
+        <h4>2 · Text extraction</h4>
+        <p>TXT, PDF, or DOCX → plain UTF-8 text</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4>3 · Features (TF-IDF)</h4>
+        <p>Criterion and answer vectorised; cosine similarity computed per sentence</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h4>4 · Signals (S, K)</h4>
+        <p>S = cosine similarity; K = keyword coverage share</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        </div>
+        <h4>5 · Score</h4>
+        <p>R = min(1, 0.65·S + 0.35·K); marks = (M/n)·R</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h4>6 · Teacher review</h4>
+        <p>Edit final marks; add comment; approve or return</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Plain-language explanation -->
+<section class="section-sm">
+  <div class="container">
+    <div class="grid-2" style="gap:40px;align-items:start">
+      <div>
+        <span class="eyebrow" style="display:inline-block;margin-bottom:16px">Signals explained</span>
+        <div class="card" style="margin-bottom:20px">
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:12px">S – Cosine Similarity</h3>
+          <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:12px">
+            The answer and each criterion are converted into TF-IDF vectors. In <em>Best-matching sentence</em> mode, EvalAssist compares the criterion against every sentence in the answer and reports the highest similarity score and the sentence it came from. In <em>Whole answer</em> mode, the entire answer is compared at once.
+          </p>
+          <p style="font-size:14px;color:var(--text-muted);line-height:1.8">
+            Cosine similarity measures the angle between the vectors, not their length. Two texts that share the same important words will have a score closer to 1.0. Scores near 0 mean the texts are topically unrelated.
+          </p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:12px">K – Keyword Coverage</h3>
+          <p style="font-size:14px;color:var(--text-muted);line-height:1.8;margin-bottom:12px">
+            EvalAssist extracts content words from each criterion (words longer than two characters, excluding common stop words, with light suffix stripping). It then checks which of those words appear somewhere in the student's answer.
+          </p>
+          <p style="font-size:14px;color:var(--text-muted);line-height:1.8">
+            K = matched / (matched + missing). The result panel shows each matched word as a green chip and each missing word as a red struck-through chip, so the evidence is always visible.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <span class="eyebrow" style="display:inline-block;margin-bottom:16px">Formula</span>
+        <div class="formula-card reveal">
+          <h3>Scoring formula</h3>
+          <div class="formula-line">R = min(1, <span>0.65 × S</span> + <span>0.35 × K</span>)</div>
+          <div class="formula-line">marks = (<span>M</span> / n) × R</div>
+          <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,0.5);line-height:1.9;">
+            <div><span style="color:var(--yellow)">M</span> = maximum marks for the question</div>
+            <div><span style="color:var(--yellow)">n</span> = number of criteria</div>
+            <div><span style="color:var(--yellow)">S</span> = TF-IDF cosine similarity (0–1)</div>
+            <div><span style="color:var(--yellow)">K</span> = keyword coverage ratio (0–1)</div>
+            <div><span style="color:var(--yellow)">R</span> = combined ratio, capped at 1</div>
+          </div>
+          <div class="note">
+            <strong>Bands:</strong> R ≥ 0.75 → Strong coverage · 0.45–0.74 → Partial coverage · &lt; 0.45 → Limited evidence.
+            Feedback names up to four missing keywords.
+          </div>
+          <div class="note" style="margin-top:12px">
+            ⚠ The weights (0.65, 0.35) are a starting heuristic chosen for sensibility, not a statistically validated grading model. They should be reviewed against your own marking data before use in high-stakes assessment.
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px">
+          <h3 style="font-size:17px;font-weight:700;margin-bottom:12px">Teacher review</h3>
+          <p style="font-size:14px;color:var(--text-muted);line-height:1.8">
+            Every suggested mark is labelled <em>provisional</em>. The teacher can:
+          </p>
+          <ul style="margin-top:10px">
+            <li style="font-size:14px;color:var(--text-muted);padding:5px 0 5px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">→</span>
+              Edit any criterion's final mark directly in the table
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:5px 0 5px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">→</span>
+              Add a personalised written comment
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:5px 0 5px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">→</span>
+              Approve the marks (copying feedback to clipboard)
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:5px 0 5px 18px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red);font-weight:700">→</span>
+              Return the submission for re-marking
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Limitations reminder -->
+<section class="section-sm" style="padding-top:0">
+  <div class="container">
+    <div class="warning-box reveal">
+      <h3>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Important limitations
+      </h3>
+      <ul style="list-style:none">
+        <li>TF-IDF does not understand meaning — a semantically correct paraphrase without the keyword will score lower than expected.</li>
+        <li>Keyword matching is brittle with spelling mistakes, abbreviations, or domain jargon.</li>
+        <li>Scanned PDFs produce almost no extractable text; OCR is not supported.</li>
+        <li>Feedback is template-based, not natural-language generated.</li>
+        <li>The tool is not designed for highly subjective essays or open-ended creative work.</li>
+      </ul>
+      <p style="margin-top:12px;font-size:13px;color:#92400e">See the <a href="{{ url_for('responsible_ai') }}" style="color:var(--amber);font-weight:600;text-decoration:underline">Responsible AI</a> page for full guidance on when <em>not</em> to use EvalAssist.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm" style="padding-top:0">
+  <div class="container center">
+    <a href="{{ url_for('evaluate_page') }}" class="btn btn-primary">Try the evaluator →</a>
+    <a href="{{ url_for('ai_engine') }}" class="btn btn-ghost" style="margin-left:12px">Explore the AI engine →</a>
+  </div>
+</section>
+
+{% endblock %}

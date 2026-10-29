@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found – EvalAssist AI{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">404</span>
+      <h1>Page not found</h1>
+      <p>The page you're looking for doesn't exist or has been moved.</p>
+      <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Go home →</a>
+        <a href="{{ url_for('evaluate_page') }}" class="btn btn-secondary">Open evaluator</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Status – EvalAssist AI{% endblock %}
+{% block meta_desc %}Run a live self-check of the EvalAssist AI core engine. See which checks pass or fail with real timings.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">SYSTEM HEALTH</span>
+      <h1>Status &amp; self-check</h1>
+      <p>Click the button below to run the built-in checks against the live scoring engine, rule system, file extractor, and page routes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container" style="max-width:780px">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2 style="font-size:18px;font-weight:800;margin-bottom:4px">Core self-check</h2>
+          <p style="font-size:13px;color:var(--text-muted)">Runs 10 checks against the live Python backend and reports pass/fail with millisecond timings.</p>
+        </div>
+        <button class="btn btn-primary" id="runTestsBtn" type="button">
+          Run self-check
+        </button>
+      </div>
+
+      <div id="testResults">
+        <!-- Populated by JS after clicking "Run self-check" -->
+        <div style="display:flex;flex-direction:column;gap:0">
+          <!-- Placeholder rows -->
+          {% set checks = [
+            "Empty answer raises error",
+            "Default rubric → 4 criteria",
+            "Custom 2-criteria rubric",
+            "Marks sum ≤ max_marks",
+            "Rule R1: high score",
+            "Rule R2: review needed",
+            "Minimax [3,5,2,9] = 3",
+            "Minimax + alpha-beta = 3",
+            ".jpg file rejected",
+            "All page routes → 200"
+          ] %}
+          {% for check in checks %}
+          <div class="status-check-row">
+            <div class="status-dot pending"></div>
+            <div class="status-check-name">{{ check }}</div>
+            <div class="status-check-ms mono">–</div>
+            <span class="status-check-badge" style="background:#f3f4f6;color:var(--text-light)">PENDING</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h2 style="font-size:15px;font-weight:700;margin-bottom:14px">What is checked</h2>
+      <table class="api-table" aria-label="Self-check descriptions">
+        <thead>
+          <tr><th>#</th><th>Check</th><th>What it verifies</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Empty answer raises error</td><td>Validation catches an empty answer string</td></tr>
+          <tr><td>2</td><td>Default rubric → 4 criteria</td><td>Default BFS rubric returns exactly 4 scored rows</td></tr>
+          <tr><td>3</td><td>Custom 2-criteria rubric</td><td>A custom 2-line rubric returns exactly 2 rows</td></tr>
+          <tr><td>4</td><td>Marks sum ≤ max_marks</td><td>Total suggested marks never exceeds the maximum</td></tr>
+          <tr><td>5</td><td>Rule R1: high score</td><td>Completeness=0.9, Correctness=0.9 fires rule R1</td></tr>
+          <tr><td>6</td><td>Rule R2: review needed</td><td>Completeness=0.2, Correctness=0.8 fires rule R2</td></tr>
+          <tr><td>7</td><td>Minimax [3,5,2,9] = 3</td><td>Root value of default minimax tree is 3</td></tr>
+          <tr><td>8</td><td>Minimax + alpha-beta = 3</td><td>α-β pruning gives the same root value (3)</td></tr>
+          <tr><td>9</td><td>.jpg file rejected</td><td>Unsupported file type raises ExtractionError</td></tr>
+          <tr><td>10</td><td>All page routes → 200</td><td>Every page returns HTTP 200 OK</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:20px;font-size:13px;color:var(--text-muted);text-align:center">
+      For a full test run: <code style="background:#e5e7eb;padding:2px 8px;border-radius:4px">pytest tests/test_core.py -v</code>
+    </p>
+  </div>
+</section>
+
+{% endblock %}

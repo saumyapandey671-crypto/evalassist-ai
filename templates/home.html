@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}EvalAssist AI – Mark Smarter. Give Better Feedback.{% endblock %}
+{% block meta_desc %}EvalAssist AI helps teachers mark written answers against a rubric. AI suggests provisional scores and writes feedback. The teacher reviews and approves.{% endblock %}
+{% block og_title %}EvalAssist AI – Faster, fairer, explainable assignment feedback{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ══════════════════════════════════════════════════════════ -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-inner container">
+    <div class="hero-content">
+      <span class="hero-eyebrow">AI-ASSISTED ASSESSMENT</span>
+      <h1 class="hero-title">
+        Mark smarter.<br>
+        Give <span class="highlight">better</span><br>
+        feedback.
+      </h1>
+      <p class="hero-desc">
+        Paste or upload a student's answer and your rubric.
+        EvalAssist compares each criterion, suggests a <strong>provisional mark</strong>,
+        and explains what's missing. You review, edit, and approve.
+      </p>
+      <div class="hero-actions">
+        <a href="{{ url_for('evaluate_page') }}" class="btn btn-primary" id="heroCTA">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Try it free
+        </a>
+        <button class="btn btn-secondary" id="seeHowBtn">See how it works</button>
+      </div>
+    </div>
+
+    <!-- CSS answer-sheet illustration -->
+    <div class="answer-sheet" aria-hidden="true">
+      <div class="answer-sheet-paper">
+        <div class="answer-sheet-header">
+          <span class="sheet-label">Written Answer</span>
+          <div class="sheet-score">5.5<br><span style="font-size:10px">/10</span></div>
+        </div>
+        <div class="sheet-line filled short"></div>
+        <div class="sheet-line filled"></div>
+        <div class="sheet-line filled short"></div>
+        <div class="sheet-line filled"></div>
+        <div class="sheet-line"></div>
+        <div class="sheet-line short"></div>
+        <div class="sheet-line"></div>
+        <div class="sheet-line filled short"></div>
+        <div class="sheet-line filled"></div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:10px;padding:3px 8px;border-radius:50px;background:#d1fae5;color:#065f46;font-weight:700;">BFS ✓</span>
+          <span style="font-size:10px;padding:3px 8px;border-radius:50px;background:#fef3c7;color:#92400e;font-weight:700;">queue ✓</span>
+          <span style="font-size:10px;padding:3px 8px;border-radius:50px;background:#fee2e2;color:#991b1b;font-weight:700;text-decoration:line-through">complexity ✗</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURE CARDS ════════════════════════════════════════════════ -->
+<div class="feature-cards-band">
+  <div class="feature-cards-inner container">
+    <div class="feature-card reveal">
+      <div class="feature-card-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <h3>Rubric-based scoring</h3>
+      <p>Each criterion is scored independently using TF-IDF similarity and keyword coverage. No black box.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.1s">
+      <div class="feature-card-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <h3>Explainable results</h3>
+      <p>See which words were matched, which are missing, and the formula behind every score — no guessing.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.2s">
+      <div class="feature-card-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Teacher stays in control</h3>
+      <p>Every score is provisional. The teacher reviews evidence, edits marks, and approves before finalising.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HOW IT WORKS ══════════════════════════════════════════════════ -->
+<section class="section" id="howItWorksSection" aria-labelledby="howHeading">
+  <div class="container">
+    <div class="center" style="margin-bottom:48px">
+      <span class="eyebrow">Process</span>
+      <h2 class="section-title" id="howHeading" style="margin:10px 0 14px">How it works in 4 steps</h2>
+      <p class="section-sub">From raw answer to provisional marks in seconds — with full transparency at every step.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">Step 01</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3>Add rubric</h3>
+        <p>Type one criterion per line, or use the four built-in BFS criteria.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 02</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        </div>
+        <h3>Add answer</h3>
+        <p>Paste text directly, or upload a .txt, .pdf, or .docx file (max 8 MB).</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 03</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Review evidence</h3>
+        <p>See matched/missing words, the best-matching sentence, and the exact formula values.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 04</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3>Approve marks</h3>
+        <p>Edit any final mark, add a teacher comment, and approve or return for re-marking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BENEFITS ══════════════════════════════════════════════════════ -->
+<section class="section" style="padding-top:0" aria-labelledby="benefitsHeading">
+  <div class="container">
+    <div class="center" style="margin-bottom:40px">
+      <span class="eyebrow">Benefits</span>
+      <h2 class="section-title" id="benefitsHeading" style="margin:10px 0">Why EvalAssist?</h2>
+    </div>
+    <div class="benefits-grid reveal">
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div>
+          <h4>Saves marking time</h4>
+          <p>Get a first-pass score instantly. Spend your time on judgment, not keyword hunting.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+        <div>
+          <h4>Consistent criteria</h4>
+          <p>The same rubric is applied to every answer with the same algorithm — no drift between markers.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div>
+          <h4>Actionable student feedback</h4>
+          <p>Feedback names the specific missing concepts, so students know exactly what to improve.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 6l11 6 11-6-11-6L1 6z"/><path d="M1 12l11 6 11-6"/><path d="M1 18l11 6 11-6"/></svg></div>
+        <div>
+          <h4>Transparent evidence</h4>
+          <p>Every score includes the TF-IDF value, keyword coverage, the formula, and the matched sentence.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+        <div>
+          <h4>Works with TXT, PDF, DOCX</h4>
+          <p>Upload any common text format. Up to 8 MB per file. Scanned PDFs are flagged automatically.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div>
+          <h4>Privacy-first</h4>
+          <p>Runs entirely on your machine. Nothing is stored, sent to external servers, or logged.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LIVE MINI DEMO ════════════════════════════════════════════════ -->
+<section class="section" style="padding-top:0" aria-labelledby="demoHeading">
+  <div class="container">
+    <div class="center" style="margin-bottom:40px">
+      <span class="eyebrow">Live preview</span>
+      <h2 class="section-title" id="demoHeading" style="margin:10px 0">See a sample result</h2>
+      <p class="section-sub">A partial-coverage answer evaluated against the default BFS rubric.</p>
+    </div>
+    <div class="mini-demo reveal">
+      <div>
+        <div class="demo-answer">
+          <h4>Sample answer (partial)</h4>
+          BFS stands for Breadth-First Search. It starts from a source node and visits all neighbours before going deeper. A queue is used to store nodes that need to be explored next.<br><br>
+          The time complexity is O(V + E). BFS explores nodes level by level, making it useful for finding the shortest path in unweighted graphs.
+        </div>
+        <a href="{{ url_for('evaluate_page') }}?sample=partial" class="btn btn-outline" style="margin-top:20px">Open in evaluator →</a>
+      </div>
+      <div class="demo-results">
+        <h4>Score breakdown (10 marks)</h4>
+        <div class="demo-row">
+          <span class="demo-criterion">BFS algorithm & purpose</span>
+          <div class="demo-bar-wrap"><div class="demo-bar" style="width:70%"></div></div>
+          <span class="demo-marks">1.75</span>
+        </div>
+        <div class="demo-row">
+          <span class="demo-criterion">Queue data structure</span>
+          <div class="demo-bar-wrap"><div class="demo-bar" style="width:60%"></div></div>
+          <span class="demo-marks">1.50</span>
+        </div>
+        <div class="demo-row">
+          <span class="demo-criterion">Time & space complexity</span>
+          <div class="demo-bar-wrap"><div class="demo-bar" style="width:40%"></div></div>
+          <span class="demo-marks">1.00</span>
+        </div>
+        <div class="demo-row">
+          <span class="demo-criterion">BFS vs DFS comparison</span>
+          <div class="demo-bar-wrap"><div class="demo-bar" style="width:25%"></div></div>
+          <span class="demo-marks">0.63</span>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:rgba(255,255,255,0.5)">Total (provisional)</span>
+          <span class="demo-marks mono" style="font-size:18px;color:#F5A425">4.88 / 10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHO IT'S FOR ══════════════════════════════════════════════════ -->
+<section class="section" style="padding-top:0" aria-labelledby="whoHeading">
+  <div class="container">
+    <div class="center" style="margin-bottom:40px">
+      <span class="eyebrow">Who it's for</span>
+      <h2 class="section-title" id="whoHeading" style="margin:10px 0">Built for educators</h2>
+    </div>
+    <div class="audience-grid reveal">
+      <div class="audience-card">
+        <div class="audience-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Teachers</h3>
+        <p>Cut first-pass marking time, maintain consistent standards across a class, and generate clear written feedback for each student.</p>
+      </div>
+      <div class="audience-card">
+        <div class="audience-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h3>Students</h3>
+        <p>Receive targeted feedback that names missing concepts, so you know exactly how to improve your answer before the final submission.</p>
+      </div>
+      <div class="audience-card">
+        <div class="audience-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <h3>Academic departments</h3>
+        <p>Standardise rubric-based assessment across modules. All scoring is transparent, auditable, and locally processed — nothing leaves your institution.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA BAND ══════════════════════════════════════════════════════ -->
+<section class="section-sm" aria-label="Call to action">
+  <div class="container">
+    <div class="cta-band reveal">
+      <h2>Ready to try it?</h2>
+      <p>No sign-up. No cloud. No paid API. Just paste an answer and a rubric.</p>
+      <a href="{{ url_for('evaluate_page') }}" class="btn btn-primary" id="ctaBandBtn">
+        Open the evaluator →
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

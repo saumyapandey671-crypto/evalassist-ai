@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Responsible AI – EvalAssist AI{% endblock %}
+{% block meta_desc %}EvalAssist AI's commitment to human oversight, bias awareness, data privacy, known limitations, and when not to use AI-assisted marking.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">ETHICS & OVERSIGHT</span>
+      <h1>Responsible AI</h1>
+      <p>EvalAssist is a tool to assist teachers, not to replace them. This page explains our commitments on oversight, fairness, privacy, known limitations, and when you should <em>not</em> use it.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+
+    <!-- Core commitments -->
+    <div class="center" style="margin-bottom:36px">
+      <span class="eyebrow">Principles</span>
+      <h2 class="section-title" style="margin:10px 0">Our core commitments</h2>
+    </div>
+    <div class="rai-grid reveal" style="margin-bottom:36px">
+      <div class="rai-card">
+        <h3>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+          Human oversight
+        </h3>
+        <ul>
+          <li>Every score is labelled <em>provisional</em> throughout the interface</li>
+          <li>A teacher must approve marks before they are used for any purpose</li>
+          <li>The teacher can edit any mark freely — EvalAssist never overrides a human decision</li>
+          <li>The approve/return workflow is built into the product, not optional</li>
+          <li>No mark is ever stored, shared, or surfaced to a student without explicit teacher action</li>
+        </ul>
+      </div>
+      <div class="rai-card">
+        <h3>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Bias &amp; accessibility
+        </h3>
+        <ul>
+          <li>TF-IDF keyword matching can disadvantage students who paraphrase correctly but differ in vocabulary</li>
+          <li>Non-native English writers may be penalised for unconventional phrasing, even when accurate</li>
+          <li>Teachers should scrutinise scores for students from diverse linguistic backgrounds</li>
+          <li>The tool does not evaluate style, argument structure, or creative expression</li>
+          <li>Colour contrast ≥ 4.5:1; keyboard-navigable; respects prefers-reduced-motion</li>
+        </ul>
+      </div>
+      <div class="rai-card">
+        <h3>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Privacy &amp; data handling
+        </h3>
+        <ul>
+          <li>EvalAssist runs entirely on your local machine — no data is sent to external servers</li>
+          <li>Nothing is logged, stored, or persisted between sessions</li>
+          <li>Session history exists only in RAM and is cleared when the server restarts</li>
+          <li>Always use anonymised data — replace names and IDs before uploading</li>
+          <li>Files are processed locally; they are never written to disk by the app</li>
+        </ul>
+      </div>
+      <div class="rai-card">
+        <h3>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Transparency
+        </h3>
+        <ul>
+          <li>The scoring formula (R = 0.65·S + 0.35·K) is shown in full for every criterion</li>
+          <li>Matched and missing keywords are listed as visible chips</li>
+          <li>The best-matching sentence is shown so teachers can verify the evidence</li>
+          <li>Weights (0.65, 0.35) are a starting heuristic — they are disclosed and changeable in source code</li>
+          <li>No accuracy percentages, benchmark comparisons, or performance claims are made</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Known limitations -->
+    <div class="center" style="margin-bottom:28px">
+      <span class="eyebrow">Limitations</span>
+      <h2 class="section-title" style="margin:10px 0">Known limitations</h2>
+    </div>
+    <div class="card reveal" style="margin-bottom:28px">
+      <div class="grid-2" style="gap:24px">
+        <div>
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;color:var(--red)">Technical limitations</h3>
+          <ul style="list-style:none">
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              <strong>TF-IDF doesn't understand meaning.</strong> A correct paraphrase without the exact keyword scores lower than expected.
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              <strong>Keyword matching is brittle.</strong> Spelling mistakes, abbreviations, and synonyms are not handled.
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              <strong>No OCR support.</strong> Scanned PDFs are detected and flagged, but cannot be marked.
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              <strong>Feedback is template-based,</strong> not natural-language generated. It names missing words, not conceptual gaps.
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="font-size:15px;font-weight:700;margin-bottom:10px;color:var(--red)">Assessment limitations</h3>
+          <ul style="list-style:none">
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              A high keyword-coverage score does not guarantee the answer is <em>correct</em> — keywords can appear in an incorrect context.
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              The heuristic weights (0.65·S + 0.35·K) have not been validated against a dataset of human-marked answers.
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative;border-bottom:1px solid var(--border)">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              Scoring across multiple criteria is independent — it does not detect contradictions or logical inconsistencies.
+            </li>
+            <li style="font-size:14px;color:var(--text-muted);padding:8px 0 8px 18px;position:relative">
+              <span style="position:absolute;left:0;color:var(--red)">→</span>
+              The tool does not evaluate academic integrity or detect plagiarism.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- When NOT to use -->
+    <div class="warning-box reveal" style="margin-bottom:36px">
+      <h3>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        When NOT to use EvalAssist
+      </h3>
+      <ul style="list-style:none">
+        <li>High-stakes exams where marks determine progression, awards, or qualifications without mandatory human re-check</li>
+        <li>Handwritten answers (upload text only; handwriting recognition is not supported)</li>
+        <li>Highly subjective or open-ended essays without a well-defined rubric</li>
+        <li>Assessment of creative or argumentative writing where style and structure matter</li>
+        <li>Situations where the teacher cannot or does not review each provisional score</li>
+      </ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="center">
+      <a href="{{ url_for('faq') }}" class="btn btn-outline" style="margin-right:12px">Read the FAQ →</a>
+      <a href="{{ url_for('evaluate_page') }}" class="btn btn-primary">Try the evaluator →</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

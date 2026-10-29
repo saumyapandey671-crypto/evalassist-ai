@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Docs – EvalAssist AI{% endblock %}
+{% block meta_desc %}Get started with EvalAssist AI: installation steps, project file overview, API reference for /api/evaluate, and troubleshooting tips.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">DOCUMENTATION</span>
+      <h1>Docs &amp; get started</h1>
+      <p>Everything you need to install, run, and understand EvalAssist AI on your own machine.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div class="docs-layout">
+
+      <!-- ── Sidebar nav ── -->
+      <nav class="docs-nav" aria-label="Documentation sections">
+        <h4>On this page</h4>
+        <a href="#setup" class="active">Setup</a>
+        <a href="#files">Project files</a>
+        <a href="#api">API reference</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </nav>
+
+      <!-- ── Main content ── -->
+      <div>
+
+        <!-- SETUP -->
+        <div class="docs-section" id="setup">
+          <h2>Setup</h2>
+          <p>EvalAssist runs locally with Python 3.10 or later. No database, no external API keys, no cloud account.</p>
+
+          <h3>1. Install dependencies</h3>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy command">Copy</button>
+            <pre>pip install -r requirements.txt</pre>
+          </div>
+          <p>This installs Flask, scikit-learn, pypdf, python-docx, and pytest.</p>
+
+          <h3>2. Start the server</h3>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy command">Copy</button>
+            <pre>python app.py</pre>
+          </div>
+
+          <h3>3. Open in your browser</h3>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy URL">Copy</button>
+            <pre>http://127.0.0.1:5000</pre>
+          </div>
+
+          <h3>4. Run tests</h3>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy command">Copy</button>
+            <pre>pytest tests/test_core.py -v</pre>
+          </div>
+        </div>
+
+        <!-- FILES -->
+        <div class="docs-section" id="files">
+          <h2>Project files</h2>
+          <table class="api-table" aria-label="Project file overview">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>app.py</td><td>Flask routes – all page and API endpoints</td></tr>
+              <tr><td>evaluator.py</td><td>Scoring engine – TF-IDF, keyword coverage, formula, validation</td></tr>
+              <tr><td>reasoning.py</td><td>Rule engine, search algorithms (BFS/DFS/IDS/Greedy/A*), minimax, uncertainty tools</td></tr>
+              <tr><td>extract.py</td><td>Text extraction from .txt, .pdf, .docx</td></tr>
+              <tr><td>templates/</td><td>Jinja2 HTML templates (base.html + one per page)</td></tr>
+              <tr><td>static/css/style.css</td><td>All styling – campus portal design system</td></tr>
+              <tr><td>static/js/app.js</td><td>Client-side JS – form, results, AI Engine demos</td></tr>
+              <tr><td>tests/test_core.py</td><td>pytest test suite (10 checks)</td></tr>
+              <tr><td>requirements.txt</td><td>Python package dependencies</td></tr>
+              <tr><td>README.md</td><td>Setup, features, limitations, responsible use note</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- API REFERENCE -->
+        <div class="docs-section" id="api">
+          <h2>API reference</h2>
+          <p>All API endpoints accept and return JSON. CORS is not configured; the API is intended for localhost use only.</p>
+
+          <h3>POST /api/evaluate</h3>
+          <p>Evaluate a student's answer against a rubric.</p>
+
+          <h4 style="font-size:14px;font-weight:700;margin:12px 0 8px">Request body</h4>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy JSON">Copy</button>
+            <pre>{
+  "answer":    "BFS uses a queue to explore nodes level by level…",
+  "rubric":    "Define BFS and explain its purpose\nDescribe the queue data structure",
+  "max_marks": 10,
+  "mode":      "passage",
+  "label":     "Optional label",
+  "question":  "Optional question text"
+}</pre>
+          </div>
+
+          <table class="api-table" style="margin-bottom:20px" aria-label="Request fields">
+            <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>answer</td><td>string</td><td>Yes</td><td>Plain text of the student's answer</td></tr>
+              <tr><td>rubric</td><td>string</td><td>No</td><td>One criterion per line; blank = 4 default BFS criteria</td></tr>
+              <tr><td>max_marks</td><td>number</td><td>No</td><td>1–100; default 10</td></tr>
+              <tr><td>mode</td><td>string</td><td>No</td><td>"passage" (default) or "whole"</td></tr>
+              <tr><td>label</td><td>string</td><td>No</td><td>Free-text label for session history</td></tr>
+              <tr><td>question</td><td>string</td><td>No</td><td>Question text for history display</td></tr>
+            </tbody>
+          </table>
+
+          <h4 style="font-size:14px;font-weight:700;margin:12px 0 8px">Response (200 OK)</h4>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy JSON">Copy</button>
+            <pre>{
+  "criteria": [
+    {
+      "criterion":       "Define BFS and explain its purpose",
+      "S":               0.4821,
+      "K":               0.5714,
+      "R":               0.5135,
+      "marks_available": 5.0,
+      "marks_suggested": 2.57,
+      "band":            "Partial coverage",
+      "feedback":        "Partial coverage. Consider addressing: graph, traversal.",
+      "matched_words":   ["breadth", "search", "queue"],
+      "missing_words":   ["graph", "traversal", "level"],
+      "matched_sentence": "BFS uses a queue to explore nodes level by level."
+    }
+  ],
+  "total_marks_available": 10,
+  "total_marks_suggested": 5.14,
+  "overall_R":             0.5135
+}</pre>
+          </div>
+
+          <h4 style="font-size:14px;font-weight:700;margin:12px 0 8px">Error response (400)</h4>
+          <div class="code-block">
+            <pre>{ "error": "The answer field is empty. Please paste or upload an answer before evaluating." }</pre>
+          </div>
+
+          <h3>POST /api/evaluate/upload</h3>
+          <p>Extract text from a file upload (multipart/form-data). Returns the extracted text so the client can display it before submitting.</p>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy response">Copy</button>
+            <pre>// Response
+{ "text": "Extracted plain text from the file…" }</pre>
+          </div>
+
+          <h3>GET /api/selftest</h3>
+          <p>Run the built-in self-checks and return pass/fail with timing.</p>
+          <div class="code-block">
+            <pre>{
+  "all_pass": true,
+  "checks": [
+    { "name": "Empty answer raises error", "status": "pass", "ms": 0.4 },
+    …
+  ]
+}</pre>
+          </div>
+
+          <h3>POST /api/rules</h3>
+          <p>Fire the rule engine with given completeness and correctness values.</p>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy JSON">Copy</button>
+            <pre>// Request
+{ "completeness": 0.8, "correctness": 0.9 }
+
+// Response
+{
+  "fired_rule":  "R1",
+  "conclusion":  "High provisional score – strong evidence on both dimensions.",
+  "trace":       ["Inputs: completeness=0.80, correctness=0.90", "R1 FIRED: …"],
+  "completeness": 0.8,
+  "correctness":  0.9
+}</pre>
+          </div>
+
+          <h3>POST /api/search</h3>
+          <p>Run a search algorithm on the evaluation state graph.</p>
+          <div class="code-block">
+            <pre>// Request: { "algorithm": "bfs" }  (bfs | dfs | ids | greedy | astar)
+// Response: { "algorithm": "BFS", "path": ["S0","S1","S4","S6"], "found": true, … }</pre>
+          </div>
+        </div>
+
+        <!-- TROUBLESHOOTING -->
+        <div class="docs-section" id="troubleshooting">
+          <h2>Troubleshooting</h2>
+
+          <h3>Import errors on startup</h3>
+          <p>Run <code style="background:var(--page-bg);padding:2px 6px;border-radius:4px">pip install -r requirements.txt</code> again. If using a virtual environment, ensure it is activated before running <code style="background:var(--page-bg);padding:2px 6px;border-radius:4px">python app.py</code>.</p>
+
+          <h3>PDF shows "almost no text"</h3>
+          <p>The PDF is likely scanned or image-based. Copy the text manually and paste it into the answer textarea. OCR is not supported.</p>
+
+          <h3>Score seems unexpectedly low</h3>
+          <p>TF-IDF does not understand synonyms or paraphrases. If the answer is correct but uses different vocabulary to the rubric criterion, the score will be lower than expected. This is a known limitation — review the evidence chips and adjust the mark in the teacher review panel.</p>
+
+          <h3>Port 5000 already in use</h3>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy command">Copy</button>
+            <pre>python app.py --port 5001   # or edit app.py: port=5001</pre>
+          </div>
+
+          <h3>pytest: ModuleNotFoundError</h3>
+          <p>Run pytest from the project root directory (the folder containing <code style="background:var(--page-bg);padding:2px 6px;border-radius:4px">app.py</code>):</p>
+          <div class="code-block">
+            <button class="copy-btn" type="button" aria-label="Copy command">Copy</button>
+            <pre>cd path/to/evalassist
+pytest tests/test_core.py -v</pre>
+          </div>
+
+          <div class="warning-box" style="margin-top:24px">
+            <h3>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Responsible use reminder
+            </h3>
+            <ul style="list-style:none">
+              <li>Use anonymised data — no names or IDs in uploaded files.</li>
+              <li>Every provisional mark must be approved by a teacher before use.</li>
+              <li>Do not use for high-stakes exams without independent human review.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /main content -->
+    </div><!-- /docs-layout -->
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Docs sidebar active link on scroll
+const docsSections = document.querySelectorAll('.docs-section');
+const docsLinks = document.querySelectorAll('.docs-nav a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      docsLinks.forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.docs-nav a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+docsSections.forEach(s => obs.observe(s));
+</script>
+{% endblock %}

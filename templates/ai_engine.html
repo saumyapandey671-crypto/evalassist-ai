@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}AI Engine – EvalAssist AI{% endblock %}
+{% block meta_desc %}Explore the AI Engine powering EvalAssist: rule engine, semantic knowledge model, workflow search (BFS, DFS, A*), minimax, and uncertainty tools — all interactive educational demos.{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-inner">
+      <span class="page-hero-eyebrow">UNDER THE HOOD</span>
+      <h1>AI Engine</h1>
+      <p>Interactive demos of the knowledge-based techniques that power EvalAssist — rule engine, search algorithms, minimax, and uncertainty reasoning.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+
+    <!-- ═══ 1. RULE ENGINE ══════════════════════════════════════════ -->
+    <div class="card" style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <h2 style="font-size:18px;font-weight:800">Rule Engine</h2>
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 10px;border-radius:50px;background:var(--red-light);color:var(--red)">Live</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px">
+        Three production rules classify a submission's quality based on two signals. Adjust the sliders to fire different rules and see the inference trace.
+      </p>
+      <div class="engine-grid">
+        <div>
+          <div class="slider-group">
+            <label class="slider-label" for="completenessSlider">
+              Completeness (S)
+              <span class="slider-val" id="completenessVal">0.50</span>
+            </label>
+            <input type="range" id="completenessSlider" min="0" max="1" step="0.01" value="0.5" aria-label="Completeness signal">
+          </div>
+          <div class="slider-group">
+            <label class="slider-label" for="correctnessSlider">
+              Correctness (K)
+              <span class="slider-val" id="correctnessVal">0.50</span>
+            </label>
+            <input type="range" id="correctnessSlider" min="0" max="1" step="0.01" value="0.5" aria-label="Correctness signal">
+          </div>
+          <div style="margin-top:16px;padding:16px;background:var(--page-bg);border-radius:var(--radius-sm)">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px">Result</div>
+            <div style="font-size:22px;font-weight:800;color:var(--red);font-family:var(--mono)" id="ruleFired">–</div>
+            <div style="font-size:13px;color:var(--text-muted);margin-top:6px" id="ruleConclusion">–</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px">Inference trace</div>
+          <div class="trace-box" id="ruleTrace" aria-live="polite" aria-label="Inference trace"></div>
+          <div style="margin-top:14px;font-size:12.5px;color:var(--text-muted);line-height:1.7">
+            <strong>R1:</strong> completeness ≥ 0.75 AND correctness ≥ 0.75 → High score<br>
+            <strong>R2:</strong> completeness &lt; 0.40 OR correctness &lt; 0.40 → Detailed review<br>
+            <strong>R3:</strong> otherwise → Partial score + targeted feedback
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ 2. KNOWLEDGE MODEL ═══════════════════════════════════════ -->
+    <div class="card" style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <h2 style="font-size:18px;font-weight:800">Semantic Knowledge Model</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px">
+        The domain ontology for assessment. Each node is a concept; edges show semantic relationships.
+      </p>
+      <div style="overflow-x:auto">
+        <svg class="knowledge-svg" viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg"
+          role="img" aria-label="Semantic network: assessment domain concepts" style="max-width:780px;width:100%;min-width:480px">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#9CA3AF"/>
+            </marker>
+          </defs>
+          <!-- Edges -->
+          <g stroke="#D1D5DB" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+            <line x1="390" y1="55" x2="200" y2="130"/>
+            <line x1="390" y1="55" x2="390" y2="120"/>
+            <line x1="390" y1="55" x2="580" y2="130"/>
+            <line x1="200" y1="165" x2="390" y2="130"/>
+            <line x1="580" y1="165" x2="390" y2="130"/>
+            <line x1="390" y1="165" x2="390" y2="230"/>
+            <line x1="390" y1="265" x2="200" y2="300"/>
+            <line x1="390" y1="265" x2="580" y2="300"/>
+            <line x1="100" y1="165" x2="200" y2="130"/>
+            <line x1="680" y1="165" x2="580" y2="130"/>
+          </g>
+          <!-- Nodes -->
+          <g font-family="Poppins,sans-serif" font-size="11" text-anchor="middle" font-weight="600">
+            <!-- Teacher -->
+            <rect x="30" y="140" width="120" height="50" rx="10" fill="#1F272B" stroke="#A12C2F" stroke-width="2"/>
+            <text x="90" y="162" fill="#fff">Teacher</text>
+            <text x="90" y="178" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">reviews &amp; approves</text>
+            <!-- Student -->
+            <rect x="150" y="105" width="120" height="50" rx="10" fill="#1F272B" stroke="#F5A425" stroke-width="2"/>
+            <text x="210" y="127" fill="#fff">Student</text>
+            <text x="210" y="143" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">submits answer</text>
+            <!-- Root: Evaluation -->
+            <rect x="320" y="20" width="140" height="50" rx="10" fill="#A12C2F" stroke="none"/>
+            <text x="390" y="42" fill="#fff">Evaluation</text>
+            <text x="390" y="58" fill="rgba(255,255,255,0.7)" font-size="9" font-weight="400">core process</text>
+            <!-- Submission -->
+            <rect x="320" y="105" width="140" height="50" rx="10" fill="#1F272B" stroke="#6B7280" stroke-width="1.5"/>
+            <text x="390" y="127" fill="#fff">Submission</text>
+            <text x="390" y="143" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">answer + rubric</text>
+            <!-- Rubric -->
+            <rect x="510" y="105" width="120" height="50" rx="10" fill="#1F272B" stroke="#F5A425" stroke-width="2"/>
+            <text x="570" y="127" fill="#fff">Rubric</text>
+            <text x="570" y="143" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">marking guide</text>
+            <!-- Academic dept -->
+            <rect x="610" y="140" width="140" height="50" rx="10" fill="#1F272B" stroke="#A12C2F" stroke-width="2"/>
+            <text x="680" y="162" fill="#fff">Department</text>
+            <text x="680" y="178" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">owns rubric</text>
+            <!-- Criterion -->
+            <rect x="320" y="200" width="140" height="50" rx="10" fill="#1F272B" stroke="#6B7280" stroke-width="1.5"/>
+            <text x="390" y="222" fill="#fff">Criterion</text>
+            <text x="390" y="238" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">one rubric row</text>
+            <!-- Score -->
+            <rect x="150" y="275" width="120" height="50" rx="10" fill="#1F272B" stroke="#1E7A4C" stroke-width="2"/>
+            <text x="210" y="297" fill="#fff">Score</text>
+            <text x="210" y="313" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">S, K, R, marks</text>
+            <!-- Feedback -->
+            <rect x="510" y="275" width="120" height="50" rx="10" fill="#1F272B" stroke="#9A6200" stroke-width="2"/>
+            <text x="570" y="297" fill="#fff">Feedback</text>
+            <text x="570" y="313" fill="rgba(255,255,255,0.5)" font-size="9" font-weight="400">missing concepts</text>
+          </g>
+          <!-- Labels on edges -->
+          <g font-family="Poppins,sans-serif" font-size="9" fill="#9CA3AF" text-anchor="middle">
+            <text x="275" y="90">has</text>
+            <text x="390" y="92">contains</text>
+            <text x="505" y="90">uses</text>
+            <text x="390" y="195">generates</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ 3. SEARCH ALGORITHMS ═════════════════════════════════════ -->
+    <div class="card" style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <h2 style="font-size:18px;font-weight:800">Workflow Search Demo</h2>
+        <span class="edu-badge">Educational demo</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px">
+        Evaluation states S0–S6. S4 is the only path to goal S6. S3 and S5 are dead ends.
+        Step through or run each algorithm automatically.
+      </p>
+      <div class="search-controls">
+        <label class="sr-only" for="searchAlgoSelect">Algorithm</label>
+        <select class="search-select" id="searchAlgoSelect" aria-label="Select search algorithm">
+          <option value="bfs">BFS – Breadth-First Search</option>
+          <option value="dfs">DFS – Depth-First Search</option>
+          <option value="ids">Iterative Deepening</option>
+          <option value="greedy">Greedy Best-First</option>
+          <option value="astar">A* Search</option>
+        </select>
+        <button class="btn btn-outline btn-sm" id="btnSearchStep" type="button">Step</button>
+        <button class="btn btn-primary btn-sm" id="btnSearchRun" type="button">Run</button>
+        <button class="btn btn-ghost btn-sm" id="btnSearchReset" type="button">Reset</button>
+      </div>
+      <div class="search-viz" id="searchViz" aria-label="Search visualisation" aria-live="polite">
+        <div class="search-node start">S0</div>
+        <div class="search-node">S1</div>
+        <div class="search-node">S2</div>
+        <div class="search-node dead-end">S3</div>
+        <div class="search-node">S4</div>
+        <div class="search-node dead-end">S5</div>
+        <div class="search-node goal">S6</div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text-muted)">
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--yellow-dim);border:2px solid var(--yellow);margin-right:4px"></span>Start</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#d1fae5;border:2px solid var(--green);margin-right:4px"></span>Goal</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);border:2px solid var(--red);margin-right:4px"></span>Current</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#fee2e2;border:2px solid var(--red);margin-right:4px"></span>Visited</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--green);margin-right:4px"></span>Path</span>
+      </div>
+      <div class="search-log" id="searchLog" aria-live="polite" style="margin-top:14px">Select an algorithm and press Step or Run.</div>
+    </div>
+
+    <!-- ═══ 4. MINIMAX ═══════════════════════════════════════════════ -->
+    <div class="card" style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <h2 style="font-size:18px;font-weight:800">Minimax with Alpha-Beta Pruning</h2>
+        <span class="edu-badge">Educational demo</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px">
+        Default leaves [3, 5, 2, 9] → root = 3. With α-β pruning, leaf 9 is pruned.
+        Edit the leaves and toggle pruning.
+      </p>
+      <form id="minimaxForm" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px">
+        <div>
+          <label class="form-label" for="minimaxLeaves">Leaf values (2, 4, or 8 numbers)</label>
+          <input type="text" class="form-control" id="minimaxLeaves" value="3, 5, 2, 9"
+            style="width:220px" aria-label="Minimax leaf values">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding-bottom:2px">
+          <input type="checkbox" id="minimaxAB" name="alpha_beta">
+          <label for="minimaxAB" style="font-size:13px;font-weight:600;cursor:pointer">Enable α-β pruning</label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Compute</button>
+      </form>
+      <div id="minimaxViz" class="minimax-tree" aria-live="polite" aria-label="Minimax tree"></div>
+      <div id="minimaxResult" style="margin-top:14px;font-size:13px;color:var(--text-muted);font-family:var(--mono)"></div>
+    </div>
+
+    <!-- ═══ 5. UNCERTAINTY TOOLS ══════════════════════════════════════ -->
+    <div style="margin-bottom:8px">
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Uncertainty Reasoning</h2>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px">
+        <span class="edu-badge" style="margin-right:8px">Educational demos</span>
+        These tools illustrate uncertainty concepts. They are <strong>not</strong> used for scoring.
+      </p>
+    </div>
+    <div class="uncertainty-grid">
+
+      <!-- Bayesian updater -->
+      <div class="uncertainty-card">
+        <h4>Bayesian Reasoning <span class="edu-badge">Demo</span></h4>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+          P(H|E) = P(E|H)·P(H) / [P(E|H)·P(H) + P(E|¬H)·(1–P(H))]
+        </p>
+        <form id="bayesForm" aria-label="Bayesian updater">
+          <div class="form-group">
+            <label class="form-label" for="bayesPrior">Prior P(H) = <span id="bayesPriorVal">0.50</span></label>
+            <input type="range" id="bayesPrior" min="0.01" max="0.99" step="0.01" value="0.5"
+              oninput="document.getElementById('bayesPriorVal').textContent=parseFloat(this.value).toFixed(2)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bayesLike">P(E|H) = <span id="bayesLikeVal">0.80</span></label>
+            <input type="range" id="bayesLike" min="0.01" max="0.99" step="0.01" value="0.8"
+              oninput="document.getElementById('bayesLikeVal').textContent=parseFloat(this.value).toFixed(2)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bayesFP">P(E|¬H) = <span id="bayesFPVal">0.20</span></label>
+            <input type="range" id="bayesFP" min="0.01" max="0.99" step="0.01" value="0.2"
+              oninput="document.getElementById('bayesFPVal').textContent=parseFloat(this.value).toFixed(2)">
+          </div>
+        </form>
+        <div id="bayesResult" style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--red);margin-top:4px"></div>
+        <div id="bayesFormula" style="font-size:11.5px;color:var(--text-muted);margin-top:6px;font-family:var(--mono)"></div>
+      </div>
+
+      <!-- Fuzzy membership -->
+      <div class="uncertainty-card">
+        <h4>Fuzzy Membership <span class="edu-badge">Demo</span></h4>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+          Triangular membership functions for Low, Medium, High on a score in [0, 1].
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="fuzzySlider">Score = <span id="fuzzyVal">0.50</span></label>
+          <input type="range" id="fuzzySlider" min="0" max="1" step="0.01" value="0.5" aria-label="Fuzzy input score">
+        </div>
+        <div class="fuzzy-chart">
+          <canvas id="fuzzyCanvas" aria-label="Fuzzy membership chart"></canvas>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:10px;font-size:12px;">
+          <span style="color:#3b82f6">Low: <strong id="fuzzyLow">–</strong></span>
+          <span style="color:#f59e0b">Med: <strong id="fuzzyMedium">–</strong></span>
+          <span style="color:#10b981">High: <strong id="fuzzyHigh">–</strong></span>
+        </div>
+      </div>
+
+      <!-- Certainty factors -->
+      <div class="uncertainty-card">
+        <h4>Certainty Factors <span class="edu-badge">Demo</span></h4>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+          CF(H, E) = CF(H) × max(0, CF(E)). Values in [−1, 1].
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="cfH">CF(H) hypothesis = <span id="cfHVal">0.70</span></label>
+          <input type="range" id="cfH" min="-1" max="1" step="0.01" value="0.7"
+            oninput="document.getElementById('cfHVal').textContent=parseFloat(this.value).toFixed(2);updateCF()">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cfE">CF(E) evidence = <span id="cfEVal">0.80</span></label>
+          <input type="range" id="cfE" min="-1" max="1" step="0.01" value="0.8"
+            oninput="document.getElementById('cfEVal').textContent=parseFloat(this.value).toFixed(2);updateCF()">
+        </div>
+        <div id="cfResult" style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--red);margin-top:8px">
+          CF(H,E) = 0.560
+        </div>
+      </div>
+
+      <!-- Dempster-Shafer -->
+      <div class="uncertainty-card">
+        <h4>Dempster-Shafer <span class="edu-badge">Demo</span></h4>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+          Combine two independent mass functions for hypothesis A.
+        </p>
+        <form id="dempsterForm" aria-label="Dempster-Shafer combination">
+          <div class="form-group">
+            <label class="form-label" for="dsM1">Source 1: m₁(A) = <span id="dsM1Val">0.60</span></label>
+            <input type="range" id="dsM1" min="0" max="1" step="0.01" value="0.6"
+              oninput="document.getElementById('dsM1Val').textContent=parseFloat(this.value).toFixed(2)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="dsM2">Source 2: m₂(A) = <span id="dsM2Val">0.70</span></label>
+            <input type="range" id="dsM2" min="0" max="1" step="0.01" value="0.7"
+              oninput="document.getElementById('dsM2Val').textContent=parseFloat(this.value).toFixed(2)">
+          </div>
+        </form>
+        <div id="dsResult" style="font-family:var(--mono);font-size:12.5px;color:var(--text-muted);margin-top:4px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Certainty factor inline (doesn't need API)
+function updateCF() {
+  const cfH = parseFloat(document.getElementById('cfH').value);
+  const cfE = parseFloat(document.getElementById('cfE').value);
+  const result = cfH * Math.max(0, cfE);
+  document.getElementById('cfResult').textContent = `CF(H,E) = ${result.toFixed(3)}`;
+}
+updateCF();
+</script>
+{% endblock %}
